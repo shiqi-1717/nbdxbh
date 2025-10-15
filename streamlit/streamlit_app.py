@@ -350,7 +350,7 @@ with st.sidebar:
     ### 🎓 宁波大学 · 病害实验室
     """)
     # st.image("img/img1.png", width='stretch')
-    st.image(str(IMG_DIR / "img1.png"), use_container_width=True)
+    st.image(str(IMG_DIR / "img1.png"), use_column_width=True)
 
     # st.markdown("---")
     # ======= 以下为“服务配置 + 模型参数”区域，外面包了一个容器，已通过 CSS 隐藏 =======
@@ -442,7 +442,7 @@ with tab_img:
         st.markdown("<div class='card'><b>原图</b></div>", unsafe_allow_html=True)
         img_file = st.file_uploader("上传图片", type=["jpg","jpeg","png","bmp","webp"], key="single_img_main")
         if img_file:
-            st.image(Image.open(img_file), caption="原图", width='stretch')
+            st.image(Image.open(img_file), caption="原图", use_column_width=True)
 
     # 右侧：检测与结果
     with col2:
@@ -457,7 +457,7 @@ with tab_img:
             with st.spinner("本地模型推理中..."):
                 det_img, df = predict_on_image(img_file.getvalue(), model_value, conf)
 
-            st.image(det_img, caption="检测结果", width='stretch')
+            st.image(det_img, caption="检测结果", use_column_width=True)
             if not df.empty:
                 st.dataframe(df, use_container_width=True)
                 c1, c2 = st.columns(2)
@@ -597,7 +597,7 @@ with tab_camera:
         if go and snap is not None:
             with st.spinner("本地模型推理中..."):
                 det_img, df = predict_on_image(snap.getvalue(), model_value, conf)
-            st.image(det_img, caption="检测结果", use_container_width=True)
+            st.image(det_img, caption="检测结果", use_column_width=True)
             if not df.empty:
                 st.dataframe(df, use_container_width=True)
 
@@ -617,6 +617,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
