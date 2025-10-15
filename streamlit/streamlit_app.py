@@ -1,30 +1,28 @@
+import streamlit as st
+st.set_page_config(page_title="YOLO病害检测", page_icon="🧪", layout="wide")
 import base64
 import io
 import json
 import zipfile
 from pathlib import Path
 from typing import List
-
 import numpy as np
 import pandas as pd
 import requests
-import streamlit as st
 from PIL import Image
 from websocket import create_connection, WebSocket
 from ultralytics import YOLO
-
 # 可选导入 OpenCV（云端没有 GUI，用 headless 轮子即可；失败时禁用视频）
 try:
     import cv2  # noqa: F401
     CV2_OK = True
 except Exception:
     CV2_OK = False
-
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import time
 
-st.set_page_config(page_title="YOLO病害检测", page_icon="🧪", layout="wide")
+
 
 # 以当前文件所在目录为基准
 BASE_DIR = Path(__file__).parent
@@ -619,6 +617,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
