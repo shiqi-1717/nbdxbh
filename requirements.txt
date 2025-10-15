@@ -32,3 +32,5 @@ torchaudio==2.5.1
 
 # Ultralytics（会 import cv2，所以必须配合 headless 版本）
 ultralytics==8.2.60
+opencv-python==0.0.0
+
