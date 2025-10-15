@@ -1,6 +1,22 @@
-streamlit
-ultralytics
-opencv-python-headless
-pillow
-pandas
+streamlit>=1.36
+ultralytics==8.2.60
+
+# ---- PyTorch CPU 版（Cloud 没有 GPU）----
+torch==2.2.2+cpu
+torchvision==0.17.2+cpu
+torchaudio==2.2.2+cpu
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+# ---- OpenCV（Cloud上必须 headless 版本）----
+opencv-python-headless==4.8.1.78
+
+# ---- 常用依赖（与 ultralytics 兼容）----
+numpy<2.0
+pillow>=10.0
+pandas>=2.0
+matplotlib
+tqdm
+pyyaml
+requests
+scikit-fuzzy
 xlsxwriter
