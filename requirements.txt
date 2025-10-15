@@ -1,28 +1,19 @@
-# --- 基础工具 ---
 pip==24.0
 setuptools<71
 wheel
 
-# --- Streamlit ---
 streamlit==1.36.0
 
-# --- 科学计算栈(与 OpenCV/Ultralytics 兼容) ---
 numpy==1.26.4
 pandas==2.2.3
 pillow==10.4.0
 XlsxWriter==3.2.0
 requests==2.32.3
 websocket-client==1.8.0
-
-# --- 模糊推理 ---
 scikit-fuzzy==0.4.2
 
-# --- 计算机视觉(云端必须用 headless，并固定到稳定版本) ---
 opencv-python-headless==4.7.0.72
-# 防止其他包间接拉取 GUI 版 OpenCV（这行是“空条件”占位，不会被安装，但能阻止某些解析器回退到 opencv-python）
-opencv-python==0.0.0 ; python_version=='0'
 
-# --- YOLO/Ultralytics 与 CPU 版 Torch ---
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.5.1+cpu
 torchvision==0.20.1+cpu
