@@ -24,6 +24,8 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import time
 
+st.set_page_config(page_title="YOLO病害检测", page_icon="🧪", layout="wide")
+
 # 以当前文件所在目录为基准
 BASE_DIR = Path(__file__).parent
 WEIGHTS = BASE_DIR / "best.pt"
@@ -226,7 +228,7 @@ def fuzzy_predict(day_val: float, night_val: float, surf_val: float, patho_val: 
 
 
 # ========================= 全局设置 & 主题扩展 =========================
-st.set_page_config(page_title="YOLO病害检测", page_icon="🧪", layout="wide")
+
 
 # 统一的 CSS：导航条 / 卡片 / 标签 / 表格 / 按钮
 st.markdown("""
@@ -617,6 +619,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
