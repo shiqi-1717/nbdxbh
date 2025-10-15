@@ -1,0 +1,11 @@
+[server]
+runOnSave = true
+port = 8501
+
+[theme]
+base = "light"          # 可改为 "dark"
+primaryColor = "#4F46E5" # 主色（靛蓝）
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#F6F7FB"
+textColor = "#0F172A"
+font = "sans serif"
