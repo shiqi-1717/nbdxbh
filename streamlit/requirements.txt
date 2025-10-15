@@ -1,22 +1,32 @@
-streamlit>=1.36
+# --- 基础工具，锁定版本更稳 ---
+pip==24.0
+setuptools<71
+wheel
+
+# --- Web UI ---
+streamlit==1.36.0
+
+# --- 科学计算 & 数据处理（与 Torch/Ultralytics 兼容的稳定组合）---
+numpy==1.26.4
+pandas==2.2.3
+pillow==10.4.0
+
+# OpenCV 必须用 headless 版本（Cloud 无显示环境）
+opencv-python-headless==4.8.1.78
+
+# 表格导出
+xlsxwriter==3.2.0
+
+# 你的业务需要
+scikit-fuzzy==0.4.2
+requests==2.32.3
+websocket-client==1.8.0
+
+# YOLO 推理框架
 ultralytics==8.2.60
 
-# ---- PyTorch CPU 版（Cloud 没有 GPU）----
+# --- PyTorch：CPU 版（Cloud 没 GPU）---
 torch==2.2.2+cpu
 torchvision==0.17.2+cpu
 torchaudio==2.2.2+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
-
-# ---- OpenCV（Cloud上必须 headless 版本）----
-opencv-python-headless==4.8.1.78
-
-# ---- 常用依赖（与 ultralytics 兼容）----
-numpy<2.0
-pillow>=10.0
-pandas>=2.0
-matplotlib
-tqdm
-pyyaml
-requests
-scikit-fuzzy
-xlsxwriter
