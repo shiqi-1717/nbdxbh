@@ -26,7 +26,8 @@ websocket-client==1.8.0
 ultralytics==8.2.60
 
 # --- PyTorch：CPU 版（Cloud 没 GPU）---
-torch==2.2.2+cpu
+torch==2.2.2 --extra-index-url https://download.pytorch.org/whl/cpu
 torchvision==0.17.2+cpu
 torchaudio==2.2.2+cpu
 --extra-index-url https://download.pytorch.org/whl/cpu
+
