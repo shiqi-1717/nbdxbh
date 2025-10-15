@@ -16,7 +16,6 @@ try:
     )
 except subprocess.CalledProcessError as e:
     print(f"安装系统依赖时出错: {e}", file=sys.stderr)
-# import cv2
 import numpy as np
 import pandas as pd
 import requests
@@ -642,4 +641,5 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
