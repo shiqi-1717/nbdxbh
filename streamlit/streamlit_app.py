@@ -3,52 +3,33 @@ import io
 import json
 import zipfile
 from pathlib import Path
-from typing import List, Dict, Any, Optional
-import subprocess
-import sys
-# 安装缺失的系统依赖 libGL.so.1
-try:
-    subprocess.check_call(
-        ["apt-get", "update", "-y"]  # 更新软件源
-    )
-    subprocess.check_call(
-        ["apt-get", "install", "-y", "libgl1-mesa-glx"]  # 安装图形库
-    )
-except subprocess.CalledProcessError as e:
-    print(f"安装系统依赖时出错: {e}", file=sys.stderr)
+from typing import List
+
 import numpy as np
 import pandas as pd
 import requests
 import streamlit as st
 from PIL import Image
 from websocket import create_connection, WebSocket
-# ========== 本地推理：模型加载（一次） ==========
 from ultralytics import YOLO
-import streamlit as st
-import pandas as pd
-# 尝试导入 OpenCV；失败时继续运行（图片推理不再依赖 cv2）
+
+# 可选导入 OpenCV（云端没有 GUI，用 headless 轮子即可；失败时禁用视频）
 try:
     import cv2  # noqa: F401
     CV2_OK = True
-except Exception as _e:
+except Exception:
     CV2_OK = False
 
-from PIL import Image
-import numpy as np
-from pathlib import Path
-import base64, io, zipfile
 import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 import time
-from pathlib import Path
 
-# 以当前文件所在目录为基准，确保云端/本地都能找到资源
+# 以当前文件所在目录为基准
 BASE_DIR = Path(__file__).parent
 WEIGHTS = BASE_DIR / "best.pt"
 IMG_DIR = BASE_DIR / "img"
-
-# 三个模型都用同一权重（你之前的写法）
 MODEL_PATHS = {"Lyc": str(WEIGHTS), "Ich": str(WEIGHTS), "Tomont": str(WEIGHTS)}
+
 
 # 你的模型清单（可扩展多个）
 # ========= 本地模型与工具 =========
@@ -107,11 +88,7 @@ def detections_to_df(res) -> pd.DataFrame:
 
 
 def predict_on_image(img_input, model_key: str, conf: float):
-    """
-    统一入口：支持 bytes / PIL.Image / numpy.ndarray / 文件路径(str/Path)。
-    始终转成 PIL 再喂给 YOLO，避免“Unsupported image type”。
-    """
-    # 1) 先转成 PIL.Image
+    # 统一转 PIL
     if isinstance(img_input, (bytes, bytearray)):
         pil_img = Image.open(io.BytesIO(img_input)).convert("RGB")
     elif isinstance(img_input, Image.Image):
@@ -122,28 +99,27 @@ def predict_on_image(img_input, model_key: str, conf: float):
         if img_input.ndim == 2:
             pil_img = Image.fromarray(img_input)  # 灰度
         elif img_input.ndim == 3:
-            # 假设是 BGR（来自 OpenCV），转 RGB
-            pil_img = Image.fromarray(cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB))
+            if CV2_OK:
+                pil_img = Image.fromarray(cv2.cvtColor(img_input, cv2.COLOR_BGR2RGB))
+            else:
+                # 假设 BGR -> RGB（无 cv2 时用通道反转）
+                pil_img = Image.fromarray(img_input[..., ::-1])
         else:
             raise TypeError(f"Unsupported numpy shape: {img_input.shape}")
     else:
         raise TypeError(f"Unsupported type: {type(img_input)}")
 
-    # 2) 推理（传 PIL 即可）
+    # 推理
     r = MODELS[model_key].predict(source=pil_img, conf=float(conf), imgsz=640, verbose=False)[0]
 
-    # # 3) 可视化到 PIL
-    # im_bgr = r.plot()
-    # im_rgb = cv2.cvtColor(im_bgr, cv2.COLOR_BGR2RGB)
-    # vis_pil = Image.fromarray(im_rgb)
+    # 可视化（Ultralytics 返回 BGR ndarray）
     im_bgr = r.plot()
-    # 不依赖 cv2，直接用 NumPy 反转通道
-    im_rgb = im_bgr[..., ::-1]
+    im_rgb = im_bgr[..., ::-1]  # 不依赖 cv2
     vis_pil = Image.fromarray(im_rgb)
 
-    # 4) 结构化结果
     df = detections_to_df(r)
     return vis_pil, df
+
 
 
 def process_video(video_bytes: bytes, model_key: str, conf: float, max_frames: int | None = None) -> Path:
@@ -641,5 +617,6 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
