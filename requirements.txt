@@ -3,34 +3,27 @@ pip==24.0
 setuptools<71
 wheel
 
-# Streamlit 及兼容的 rich
+# Streamlit 与兼容依赖
 streamlit==1.36.0
-rich==13.9.4
+rich==13.9.4          # 与 streamlit 1.36 兼容
 
 # 科学计算
 numpy==1.26.4
 pandas==2.2.3
+scipy==1.11.4         # 给 scikit-fuzzy 用，避免源码编译
 pillow==10.4.0
 XlsxWriter==3.2.0
 requests==2.32.3
 websocket-client==1.8.0
 scikit-fuzzy==0.4.2
 
-# 只装“无界面”的 OpenCV，避免 libGL 依赖
+# OpenCV：只装无界面版，避免 libGL 依赖
 opencv-python-headless==4.8.1.78
-# 显式禁止桌面版被间接装上（被 ultralytics 依赖时常见）
-# 注意：pip 没有“卸载别名”的语法，这里通过冲突规避：
-# 1) 不写 opencv-python
-# 2) 保证 headless 行放在 ultralytics 之后也能生效
-# 3) 如果 Cloud 日志里仍能看到装了 opencv-python，则把下面一行也加上：
-# opencv-python==0.0.0
 
-# PyTorch（CPU）——已在 PyPI，删除 extra-index-url
+# PyTorch（CPU 版）
 torch==2.5.1
 torchvision==0.20.1
 torchaudio==2.5.1
 
-# Ultralytics（会 import cv2，所以必须配合 headless 版本）
+# YOLO
 ultralytics==8.2.60
-opencv-python==0.0.0
-
