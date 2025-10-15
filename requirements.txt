@@ -3,6 +3,7 @@ setuptools<71
 wheel
 
 streamlit==1.36.0
+rich==13.7.1            # 修正与 streamlit 1.36 的依赖匹配
 
 numpy==1.26.4
 pandas==2.2.3
@@ -12,10 +13,13 @@ requests==2.32.3
 websocket-client==1.8.0
 scikit-fuzzy==0.4.2
 
-opencv-python-headless==4.7.0.72
-
+# CPU 版 PyTorch（Cloud 可装），注意多了一行 index，只能出现在根 requirements 里
 --extra-index-url https://download.pytorch.org/whl/cpu
 torch==2.5.1+cpu
 torchvision==0.20.1+cpu
 torchaudio==2.5.1+cpu
+
+# YOLO
 ultralytics==8.2.60
+# 关键：只装“无界面”OpenCV，避免依赖 libGL
+opencv-python-headless==4.8.1.78
