@@ -1,6 +1,10 @@
+# 让安装器别装到不兼容的 rich 版本（与 streamlit 1.36 匹配）
 rich==13.7.1
+
+# Streamlit 固定版本（你当前代码基于此）
 streamlit==1.36.0
 
+# 科学计算
 numpy==1.26.4
 pandas==2.2.3
 pillow==10.4.0
@@ -8,11 +12,14 @@ XlsxWriter==3.2.0
 requests==2.32.3
 websocket-client==1.8.0
 scikit-fuzzy==0.4.2
+
+# OpenCV 无 GUI 版本，避免 libGL.so.1
 opencv-python-headless==4.8.1.78
 
+# PyTorch（CPU）— 直接用 PyPI 的默认 CPU 轮子，避免 extra-index-url/uv 冲突
 torch==2.5.1
 torchvision==0.20.1
 torchaudio==2.5.1
 
+# YOLOv8（升级版本，支持 v10DetectLoss）
 ultralytics==8.3.74
-
