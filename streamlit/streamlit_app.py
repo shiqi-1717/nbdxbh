@@ -370,7 +370,7 @@ with st.sidebar:
     model_options = {"Lyc": "刺激隐核虫", "Ich": "多子小瓜虫", "Tomont": "包囊"}
     model_value = st.selectbox("模型类型", options=list(model_options.keys()),
                                format_func=lambda x: f"{x}（{model_options[x]}）")
-    conf = st.slider("置信度阈值", 0.05, 0.9, 0.25, 0.05)
+    # conf = st.slider("置信度阈值", 0.05, 0.9, 0.25, 0.05)
     st.markdown(f"<span class='badge'>当前模型: <b>{model_value}</b></span>", unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)  # ← 结束隐藏容器
@@ -617,6 +617,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
