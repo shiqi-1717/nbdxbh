@@ -452,7 +452,7 @@ with tab_img:
         if run_single and img_file:
             files = {"file": (img_file.name, img_file.getvalue(), img_file.type or "image/jpeg")}
             data = {"model_type": model_value}
-            params = {"conf": conf}
+            # params = {"conf": conf}
 
             with st.spinner("本地模型推理中..."):
                 det_img, df = predict_on_image(img_file.getvalue(), model_value, conf)
@@ -617,6 +617,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
