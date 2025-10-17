@@ -455,7 +455,8 @@ with tab_img:
             # params = {"conf": conf}
 
             with st.spinner("本地模型推理中..."):
-                det_img, df = predict_on_image(img_file.getvalue(), model_value, conf)
+                # det_img, df = predict_on_image(img_file.getvalue(), model_value, conf)
+                det_img, df = predict_on_image(img_file.getvalue(), model_value)
 
             st.image(det_img, caption="检测结果", use_column_width=True)
             if not df.empty:
@@ -617,6 +618,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
