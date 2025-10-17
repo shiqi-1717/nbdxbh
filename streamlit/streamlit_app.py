@@ -333,7 +333,7 @@ st.markdown("""
 <div class="app-header">
   <div class="app-title-row">
     <div class="app-icon">🧪</div>
-    <div class="app-title">YOLO寄生虫检测</div>
+    <div class="app-title">鱼类寄生虫病检测</div>
   </div>
   <div class="app-subtitle">图片 / 批量 / 视频 / 摄像头 / 模糊预测 — 一站式检测台</div>
 </div>
@@ -617,6 +617,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
