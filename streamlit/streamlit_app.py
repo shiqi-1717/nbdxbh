@@ -608,15 +608,16 @@ with tab_fuzzy:
 
     c1, c2 = st.columns(2)
     with c1:
-        day_behavior   = st.number_input("日间行为（1~4）",  min_value=1.0, max_value=4.0, value=2.0, step=0.1)
-        night_behavior = st.number_input("夜间行为（1~4）",  min_value=1.0, max_value=4.0, value=2.4, step=0.1)
+        day_behavior   = st.number_input("日间行为（1~3）",  min_value=1.0, max_value=4.0, value=3.0, step=0.1)
+        night_behavior = st.number_input("夜间行为（1~3）",  min_value=1.0, max_value=4.0, value=1, step=0.1)
     with c2:
-        surface_features = st.number_input("体表特征（1~4）", min_value=1.0, max_value=4.0, value=1.8, step=0.1)
-        pathogen         = st.number_input("病原特征（1~4）", min_value=1.0, max_value=4.0, value=2.6, step=0.1)
+        surface_features = st.number_input("体表特征（1~3）", min_value=1.0, max_value=4.0, value=3, step=0.1)
+        pathogen         = st.number_input("病原特征（1~3）", min_value=1.0, max_value=4.0, value=3, step=0.1)
 
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
