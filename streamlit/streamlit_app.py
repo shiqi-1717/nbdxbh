@@ -29,6 +29,7 @@ BASE_DIR = Path(__file__).parent
 WEIGHTS = BASE_DIR / "best.pt"
 IMG_DIR = BASE_DIR / "img"
 MODEL_PATHS = {"Lyc": str(WEIGHTS), "Ich": str(WEIGHTS), "Tomont": str(WEIGHTS)}
+DEFAULT_CONF = 0.6  # 默认置信度
 
 
 # 你的模型清单（可扩展多个）
@@ -87,7 +88,7 @@ def detections_to_df(res) -> pd.DataFrame:
 
 
 
-def predict_on_image(img_input, model_key: str, conf: float):
+def predict_on_image(img_input, model_key: str, conf: float | None = None):
     # 统一转 PIL
     if isinstance(img_input, (bytes, bytearray)):
         pil_img = Image.open(io.BytesIO(img_input)).convert("RGB")
@@ -110,7 +111,9 @@ def predict_on_image(img_input, model_key: str, conf: float):
         raise TypeError(f"Unsupported type: {type(img_input)}")
 
     # 推理
-    r = MODELS[model_key].predict(source=pil_img, conf=float(conf), imgsz=640, verbose=False)[0]
+    c = float(conf) if conf is not None else DEFAULT_CONF
+    # r = MODELS[model_key].predict(source=pil_img, conf=float(conf), imgsz=640, verbose=False)[0]
+    r = MODELS[model_key].predict(source=pil_img, conf=c, imgsz=640, verbose=False)[0]
 
     # 可视化（Ultralytics 返回 BGR ndarray）
     im_bgr = r.plot()
@@ -122,7 +125,7 @@ def predict_on_image(img_input, model_key: str, conf: float):
 
 
 
-def process_video(video_bytes: bytes, model_key: str, conf: float, max_frames: int | None = None) -> Path:
+def process_video(video_bytes: bytes, model_key: str, conf: float | None = None, max_frames: int | None = None) -> Path:
     if not CV2_OK:
         raise RuntimeError("当前环境未能加载 OpenCV（cv2），无法进行视频处理。请在本地或支持 OpenCV 的环境运行该功能。")
     """逐帧推理并输出 mp4，返回输出视频路径"""
@@ -141,7 +144,9 @@ def process_video(video_bytes: bytes, model_key: str, conf: float, max_frames: i
         if not ok: break
         i += 1
         if max_frames and i > max_frames: break
-        r = MODELS[model_key].predict(source=frame, conf=float(conf), imgsz=640, verbose=False)[0]
+        c = float(conf) if conf is not None else DEFAULT_CONF
+        # r = MODELS[model_key].predict(source=frame, conf=float(conf), imgsz=640, verbose=False)[0]
+        r = MODELS[model_key].predict(source=frame, conf=c, imgsz=640, verbose=False)[0]
         vw.write(r.plot())
 
     cap.release(); vw.release()
@@ -370,7 +375,7 @@ with st.sidebar:
     model_options = {"Cry": "刺激隐核虫病", "Ich": "多子小瓜虫病", "Tomont": "包囊"}
     model_value = st.selectbox("模型类型", options=list(model_options.keys()),
                                format_func=lambda x: f"{x}（{model_options[x]}）")
-    conf = st.slider("置信度阈值", 0.05, 1.0, 0.6, 0.05)
+    # conf = st.slider("置信度阈值", 0.05, 1.0, 0.6, 0.05)
     st.markdown(f"<span class='badge'>当前模型: <b>{model_value}</b></span>", unsafe_allow_html=True)
 
     st.markdown('</div>', unsafe_allow_html=True)  # ← 结束隐藏容器
@@ -455,7 +460,9 @@ with tab_img:
             # params = {"conf": conf}
 
             with st.spinner("本地模型推理中..."):
-                det_img, df = predict_on_image(img_file.getvalue(), model_value, conf)
+                # det_img, df = predict_on_image(img_file.getvalue(), model_value, conf)
+                det_img, df = predict_on_image(img_file.getvalue(), model_value)
+                
 
             st.image(det_img, caption="检测结果", use_column_width=True)
             if not df.empty:
@@ -496,7 +503,8 @@ with tab_folder:
         for i, f in enumerate(files, start=1):
             status.info(f"推理中：{f.name} ({i}/{total})")
             with st.spinner(f"推理：{f.name}"):
-                det_img, df = predict_on_image(f.getvalue(), model_value, conf)
+                # det_img, df = predict_on_image(f.getvalue(), model_value, conf)
+                det_img, df = predict_on_image(f.getvalue(), model_value)
 
                 # 结果表
                 if not df.empty:
@@ -556,7 +564,8 @@ with tab_video:
         with st.spinner("本地视频处理...（按 CPU 速度可能较慢）"):
             # 本地逐帧推理并导出处理后的视频
             out_path = process_video(
-                vid_file.getvalue(), model_value, conf, max_frames=None
+                # vid_file.getvalue(), model_value, conf, max_frames=None
+                vid_file.getvalue(), model_value, max_frames=None
             )
         st.video(str(out_path))
         st.download_button(
@@ -596,7 +605,8 @@ with tab_camera:
         go = st.button("检测此照片", type="primary", disabled=(snap is None))
         if go and snap is not None:
             with st.spinner("本地模型推理中..."):
-                det_img, df = predict_on_image(snap.getvalue(), model_value, conf)
+                # det_img, df = predict_on_image(snap.getvalue(), model_value, conf)
+                det_img, df = predict_on_image(snap.getvalue(), model_value)
             st.image(det_img, caption="检测结果", use_column_width=True)
             if not df.empty:
                 st.dataframe(df, use_container_width=True)
@@ -617,6 +627,7 @@ with tab_fuzzy:
     if st.button("🧪 预测", type="primary"):
         r = fuzzy_predict(day_behavior, night_behavior, surface_features, pathogen)
         st.success(f"风险值: {r['risk_value']}，状态: {r['risk_status']}")
+
 
 
 
